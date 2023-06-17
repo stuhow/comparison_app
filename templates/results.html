@@ -1,0 +1,39 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Quote summary</title>
+</head>
+<body>
+    <h1>Quote summary</h1>
+    <p>First line of text: {{ first_line }}</p>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Table</title>
+</head>
+<body>
+    <h1>Table</h1>
+    <table>
+        <thead>
+            <tr>
+                {% for column in data.keys() %}
+                <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in range(data['Breakdown']|length) %}
+            <tr>
+                {% for column in data.keys() %}
+                <td>{{ data[column][row] }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
