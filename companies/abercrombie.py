@@ -7,7 +7,7 @@ def abercrombie_dictionaries(text):
 
     date_pattern = re.compile(r'[A-Z]+[a-z]*\s[0-9]{1,2}[a-z]+\s[a-zA-Z]+\s[0-9]{4}')
     hotel_pattern = re.compile('(.+)([0-9]+).Night(s).+\n([0-9]+)\sx\s(.+)(\sRoom.+)\n')
-    # flight_pattern = re.compile('(Depart:)((.|\n)*)(Flight No:)((.|\n)*)(Flight Class:)((.|\n)*)(Arrive:)((.|\n)*)(Duration:)(.+)')
+    flight_pattern = re.compile('(Depart:)((.|\n)*)(Flight No:)((.|\n)*)(Flight Class:)((.|\n)*)(Arrive:)((.|\n)*)(Duration:)(.+)')
     cost_pattern = re.compile('Total Holiday Cost   Average per person cost   Total Deposit required to confirm \nthese arrangements  \n \n(£.+)\n.+\n(£.+)\n(£.+)')
     date_format ="%A.%dth.%B.%Y"
 
@@ -33,6 +33,20 @@ def abercrombie_dictionaries(text):
                 'Board basis': []
                 }
 
+    flight_dict ={'Departure Date': [],
+                'Departure Airport': [],
+                'Departure City': [],
+                'Departure Time': [],
+                'Flight number': [],
+                'Airline': [],
+                'Class': [],
+                'Arival Airport': [],
+                'Arrival City': [],
+                'Arrival Time': [],
+                'Arrival Date': [],
+                'Duration': []
+            }
+
     # Loop over date ranges in the tuples to extract the text between dates and after the final date
     for i in tuple_dates_list:
         # find's text between dates
@@ -54,6 +68,22 @@ def abercrombie_dictionaries(text):
                     hotel_dict['Number of rooms'].append(hotel[0][3])
                     hotel_dict['Board basis'].append(hotel[0][5].strip())
 
+                # Extract flight details if the exist
+                flight = re.findall(flight_pattern, paragraph)
+                if len(flight) > 0:
+                    flight_dict['Departure Date'].append(i[0])
+                    flight_dict['Departure Airport'].append(flight[0][1].strip().split(', ')[0])
+                    flight_dict['Departure City'].append(flight[0][1].split(', ')[1])
+                    flight_dict['Departure Time'].append(flight[0][1].split(', ')[-1].replace('at ','').strip())
+                    flight_dict['Flight number'].append(flight[0][4].strip().split(' ')[0])
+                    flight_dict['Airline'].append(flight[0][4].split('(')[1].split(')')[0])
+                    flight_dict['Class'].append(flight[0][7].strip().split('(')[1].split(')')[0])
+                    flight_dict['Arival Airport'].append(flight[0][10].strip().split(', ')[0])
+                    flight_dict['Arrival City'].append(flight[0][10].strip().split(', ')[1])
+                    flight_dict['Arrival Time'].append(flight[0][10].strip().split(', ')[-1].replace('at ','').split(' on ')[0])
+                    flight_dict['Arrival Date'].append(flight[0][10].strip().split(', ')[-1].replace('at ','').split(' on ')[1])
+                    flight_dict['Duration'].append(flight[0][-1].strip())
+
         else:
             hotel_pattern2 = re.compile('(' + i[0]  + ')((.|\n)*)')
             matches = hotel_pattern2.finditer(text)
@@ -73,6 +103,22 @@ def abercrombie_dictionaries(text):
                     hotel_dict['Number of rooms'].append(hotel[0][3])
                     hotel_dict['Board basis'].append(hotel[0][5].strip())
 
+                # Extract flight details if the exist
+                flight = re.findall(flight_pattern, paragraph)
+                if len(flight) > 0:
+                    flight_dict['Departure Date'].append(i[0])
+                    flight_dict['Departure Airport'].append(flight[0][1].strip().split(', ')[0])
+                    flight_dict['Departure City'].append(flight[0][1].split(', ')[1])
+                    flight_dict['Departure Time'].append(flight[0][1].split(', ')[-1].replace('at ','').strip())
+                    flight_dict['Flight number'].append(flight[0][4].strip().split(' ')[0])
+                    flight_dict['Airline'].append(flight[0][4].split('(')[1].split(')')[0])
+                    flight_dict['Class'].append(flight[0][7].strip().split('(')[1].split(')')[0])
+                    flight_dict['Arival Airport'].append(flight[0][10].strip().split(', ')[0])
+                    flight_dict['Arrival City'].append(flight[0][10].strip().split(', ')[1])
+                    flight_dict['Arrival Time'].append(flight[0][10].strip().split(', ')[-1].replace('at ','').split(' on ')[0])
+                    flight_dict['Arrival Date'].append(flight[0][10].strip().split(', ')[-1].replace('at ','').split(' on ')[1])
+                    flight_dict['Duration'].append(flight[0][-1].strip())
+
 
     # Find trip cost
 
@@ -80,4 +126,4 @@ def abercrombie_dictionaries(text):
 
     cost_dict = {'Breakdown': ['Total Holiday Cost', 'Average per person cost', 'Total Deposit required to confirm these arrangements'], 'Cost': [costs[0][0].split(' ')[0], costs[0][1], costs[0][2]]}
 
-    return cost_dict, hotel_dict
+    return cost_dict, hotel_dict, flight_dict

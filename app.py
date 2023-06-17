@@ -39,7 +39,11 @@ def upload_file():
             # correct functions returning dictionaries for the costs, flights and hotels
             quote_data = get_data(text, company)
 
-            return render_template('results.html', company=company, hotel=quote_data[1], data=quote_data[0])
+            return render_template('results.html',
+                                   company=company,
+                                   flight=quote_data[2],
+                                   hotel=quote_data[1],
+                                   data=quote_data[0])
 
         return 'Invalid file format'
 

@@ -1,15 +1,3 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Quote summary</title>
-</head>
-<body>
-    <h1>Quote summary</h1>
-    <p>First line of text: {{ first_line }}</p>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,6 +48,25 @@
             </tr>
             {% endfor %}
         </tbody>
+    </table>
+    <h3>Flight Summary</h3>
+    <table>
+      <thead>
+          <tr>
+              {% for column in flight.keys() %}
+              <th>{{ column }}</th>
+              {% endfor %}
+          </tr>
+      </thead>
+      <tbody>
+          {% for i in range(flight['Departure Date']|length) %}
+          <tr>
+              {% for column in flight.keys() %}
+              <td>{{ flight[column][i] }}</td>
+              {% endfor %}
+          </tr>
+          {% endfor %}
+      </tbody>
     </table>
     <h3>Cost Summary</h3>
     <table>
