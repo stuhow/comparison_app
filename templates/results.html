@@ -13,10 +13,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Table</title>
+  <title>Table Example</title>
+  <style>
+      /* Table Styles */
+      table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+
+      th, td {
+          padding: 8px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+      }
+
+      th {
+          background-color: #f2f2f2;
+      }
+
+      /* Additional Styles */
+      h1 {
+          text-align: center;
+      }
+  </style>
+<head>
+    <title>Summary</title>
 </head>
 <body>
-    <h1>Table</h1>
+    <h1>Summary</h1>
+    <p>Travel Company: {{ company }}</p>
+    <h3>Hotel Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                {% for column in hotel.keys() %}
+                <th>{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in range(hotel['Check-in Date']|length) %}
+            <tr>
+                {% for column in hotel.keys() %}
+                <td>{{ hotel[column][row] }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Cost Summary</h3>
     <table>
         <thead>
             <tr>

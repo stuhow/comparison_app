@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import re
 from PyPDF2 import PdfFileReader
+from helperfunctions import select_company, get_data
+
 
 app = Flask(__name__)
 
@@ -21,6 +23,7 @@ def upload_file():
 
         # Check if the file is a PDF
         if file.filename.endswith('.pdf'):
+
             # Read PDF
             pdf_reader = PdfFileReader(file)
 
@@ -29,13 +32,14 @@ def upload_file():
             for page in pdf_reader.pages:
                 text += page.extract_text()
 
-            # Find trip cost summaries from within text
-            cost_parrern = re.compile('Total Holiday Cost   Average per person cost   Total Deposit required to confirm \nthese arrangements  \n \n(£.+)\n.+\n(£.+)\n(£.+)')
-            costs = re.findall(cost_parrern, text)
+            # check name of company function
+            company = select_company(text)
 
-            data = {'Breakdown': ['Total Holiday Cost', 'Average per person cost', 'Total Deposit required to confirm these arrangements'], 'Cost': [costs[0][0].split(' ')[0], costs[0][1], costs[0][2]]}
+            # once we have the name of the company extract the data with the
+            # correct functions returning dictionaries for the costs, flights and hotels
+            quote_data = get_data(text, company)
 
-            return render_template('results.html', data=data)
+            return render_template('results.html', company=company, hotel=quote_data[1], data=quote_data[0])
 
         return 'Invalid file format'
 
