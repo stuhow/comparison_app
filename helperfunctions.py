@@ -74,7 +74,7 @@ def add_iata_code(flight_dict):
 
     return flight_dict
 
-def add_flight_cost(flight_dict):
+def add_multistop_flight_cost(flight_dict):
     '''a function to get flight costs'''
 
     # create legs value for all flights
@@ -82,12 +82,12 @@ def add_flight_cost(flight_dict):
     for i in range(len(flight_dict['Departure Date'])):
         legs.append({"origin":flight_dict["Departure airport IATA code"][i], "destination":flight_dict["Arrival airport IATA code"][i], "date":flight_dict["Departure Date"][i]})
 
-    legs = str(legs).replace('\'','"')
+    legs = str(legs).replace('\'','"').replace(" ","")
 
     url = os.getenv("SEARCH_FLIGHT_MULTISTOP_ENDPOINT")
 
     querystring = {"legs":legs,
-                "waitTime":"5000",
+                "waitTime":"10000",
                 "adults":"1",
                 "cabinClass":flight_dict['Class'][0].lower(),
                 "currency":"GBP",
@@ -116,3 +116,102 @@ def add_flight_cost(flight_dict):
 
 
     return flight_dict
+
+def add_flight_cost(flight_dict):
+
+    url = os.getenv("SEARCH_FLIGHT_ENDPOINT")
+
+    querystring = {"origin":flight_dict['Departure airport IATA code'][0],
+                "destination":flight_dict['Arrival airport IATA code'][0],
+                "date":flight_dict['Departure Date'][0],
+                "returnDate":flight_dict['Departure Date'][1],
+                "adults":"1",
+                "cabinClass":flight_dict['Class'][0].lower(),
+                "currency":"GBP",
+                "countryCode":"UK",
+                "market":"en-GB"}
+
+    headers = {
+        "X-RapidAPI-Key": os.getenv("SKYSCANNER_API_KEY"),
+        "X-RapidAPI-Host": os.getenv("SKYSCANNER_API_HOST")
+    }
+
+    response = requests.get(url, headers=headers, params=querystring).json()
+
+    filtered_data = response['data']
+
+    # is a function needed here to get the closest match to the airline names as they may not match?
+
+    for i in range(len(flight_dict['Departure Date'])):
+        filtered_data = [item for item in filtered_data if item['legs'][i]['carriers'][0]['name'] == flight_dict['Airline'][i]]
+        filtered_data = [item for item in filtered_data if item['legs'][i]['departure'][11:16] == flight_dict['Departure Time'][i]]
+
+    flight_dict['Flight cost per person'] = [filtered_data[0]['price']['amount']]
+
+    while len(flight_dict['Flight cost per person']) < len(flight_dict['Departure Date']):
+        flight_dict['Flight cost per person'].append(" - ")
+
+
+    return flight_dict
+
+
+def add_hotel_details(hotel_dict):
+    for i in range(len(hotel_dict['Check-in Date'])):
+
+        full_hotel_name = hotel_dict['Hotel name'][i] + ", " + hotel_dict['Location'][i]
+
+        url = os.getenv("HOTEL_LOCATION_ENDPOINT")
+
+        querystring = {"name":full_hotel_name,
+                       "locale":"en-gb"}
+
+        headers = {
+            "X-RapidAPI-Key": os.getenv("SKYSCANNER_API_KEY"),
+            "X-RapidAPI-Host": os.getenv("SKYSCANNER_API_HOST")
+        }
+
+        response = requests.get(url, headers=headers, params=querystring).json()
+
+        hotel_id = response[0]['dest_id']
+
+        url = os.getenv("HOTEL_SEARCH_ENDPOINT")
+
+        querystring = {"order_by":"popularity",
+                       "adults_number":"2",
+                       "checkin_date":hotel_dict['Check-in Date'][i],
+                       "filter_by_currency":"GBP",
+                       "dest_id":hotel_id,
+                       "locale":"en-gb",
+                       "checkout_date":hotel_dict['Check-out Date'][i],
+                       "units":"metric",
+                       "room_number":"1",
+                       "dest_type":"hotel"}
+
+        headers = {
+            "X-RapidAPI-Key": os.getenv("SKYSCANNER_API_KEY"),
+            "X-RapidAPI-Host": os.getenv("SKYSCANNER_API_HOST")
+        }
+
+        response = requests.get(url, headers=headers, params=querystring).json()
+
+        grossPrice = response['results'][0]['priceBreakdown']['grossPrice']['value']
+
+        if 'excludedPrice' in response['results'][0]['priceBreakdown'].keys():
+            excludedPrice = response['results'][0]['priceBreakdown']['excludedPrice']['value']
+            total_price = round(excludedPrice + grossPrice)
+        else:
+            total_price = round(grossPrice)
+
+        review_score = response['results'][0]['reviewScore']
+
+        if 'Starting price on Booking.com' not in hotel_dict.keys():
+            hotel_dict['Starting price on Booking.com'] = [total_price]
+        else:
+            hotel_dict['Starting price on Booking.com'].append(total_price)
+
+        if 'Review score on Booking.com' not in hotel_dict.keys():
+            hotel_dict['Review score on Booking.com'] = [review_score]
+        else:
+            hotel_dict['Review score on Booking.com'].append(review_score)
+
+    return hotel_dict
