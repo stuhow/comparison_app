@@ -1,68 +1,37 @@
 import re
-import pdftotext
-
-# here
-import os
-import openai
-import pdftotext
-
-with open('trailfinders.pdf', "rb") as f:
-    pdf = pdftotext.PDF(f)
-
-text =''
-for page in pdf:
-    text += page
-
-date_pattern = re.compile('\s[A-Z]{3}\s[0-9]{2}\s[A-Z]{3}\s[0-9]{4}')
+from dictionaries import hotel_dict
+from trainfinders_hotel_functions import hotel_extraction
+from trailfinders_helper_functions import load_text, extract_date_tuples
 
 
-# create list of dates
-matches1 = date_pattern.finditer(text)
-dates_list=[]
-for match1 in matches1:
-    dates_list.append(match1.group().replace('\ue913 ',''))
+def trailfinders_dictionaries():
+    # import standard hotel dictionary
+    base_hotel_dict = hotel_dict()
 
+    # load the text
+    text =load_text()
 
-# Create date ranges to find the paragraphs of text
-tuple_dates_list = [(x,y) for x,y in zip(dates_list, dates_list[1:])]
-tuple_dates_list.append((dates_list[-1],)) # finds text after the final date
+    # extract the list of date tuples from the text
+    tuple_dates_list = extract_date_tuples(text)
 
+    # loop through the date tuples to extract the info for each day
+    for i in tuple_dates_list:
 
-for i in tuple_dates_list:
-        # find's text between dates
+        # find details in the text between dates
         if len(i)==2:
-            hotel_pattern2 = re.compile('(\s' + i[0]  + ')((.|\n)*)' + '(\s' + i[1] + ')')
-            matches = hotel_pattern2.finditer(text)
-            for match in matches:
-                paragraph = match.group(2)
-                print('..........')
-                print(paragraph)
-                regex = re.compile(r'ACCOMMODATION\s+(.*)\s+Location', re.DOTALL)
-                match = regex.search(paragraph)
-                if match:
-                    hotel_name = match.group(1).strip()
-                    print(hotel_name)
+            inbetween_dates_pattern = re.compile('(\s' + i[0]  + ')((.|\n)*)' + '(\s' + i[1] + ')')
 
-                regex = re.compile(r'for\s+(\d+)\s+night')
-                match = regex.search(paragraph)
-                if match:
-                    num_nights = match.group(1)
-                    print(num_nights)
+            # get hotel dictionary
+            single_hotel_dict = hotel_extraction(base_hotel_dict, inbetween_dates_pattern, text, i)
 
+        # find details after final date
         else:
-            hotel_pattern2 = re.compile('( ' + i[0]  + ')((.|\n)*)')
-            matches = hotel_pattern2.finditer(text)
+            final_date_pattern = re.compile('( ' + i[0]  + ')((.|\n)*)')
 
-            for match in matches:
-                paragraph = match.group(2)
-                regex = re.compile(r'ACCOMMODATION\s+(.*)\s+Location', re.DOTALL)
-                match = regex.search(paragraph)
-                if match:
-                    hotel_name = match.group(1).strip()
-                    print(hotel_name)
+            # get hotel dictionary
+            single_hotel_dict = hotel_extraction(base_hotel_dict, final_date_pattern, text, i)
 
-                regex = re.compile(r'for\s+(\d+)\s+night')
-                match = regex.search(paragraph)
-                if match:
-                    num_nights = match.group(1)
-                    print(num_nights)
+    return single_hotel_dict
+
+gf= trailfinders_dictionaries()
+print(gf)
