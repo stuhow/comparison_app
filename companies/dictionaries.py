@@ -9,3 +9,10 @@ def hotel_dict():
             'Board basis': []
             }
     return hotel_dict
+
+def cost_dict():
+    cost_dict = {'Total price': [],
+            'Price per person': [],
+
+            }
+    return cost_dict
