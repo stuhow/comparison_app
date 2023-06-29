@@ -30,5 +30,3 @@ def extract_costs(text):
     cost_dictionary['Total price'].append(total_trip_cost(text))
     cost_dictionary['Price per person'].append(cost_per_person(text))
     return cost_dictionary
-
-print(extract_costs(text))

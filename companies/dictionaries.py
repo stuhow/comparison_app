@@ -16,3 +16,18 @@ def cost_dict():
 
             }
     return cost_dict
+
+def flight_dict():
+    flight_dict = {'Departure Date': [],
+               'Departure Airport': [],
+               'Departure City': [],
+               'Departure Time': [],
+               'Flight number': [],
+               'Airline': [],
+               'Class': [],
+               'Arival Airport': [],
+               'Arrival City': [],
+               'Arrival Time': [],
+               'Arrival Date': [],
+               'Duration': []}
+    return flight_dict

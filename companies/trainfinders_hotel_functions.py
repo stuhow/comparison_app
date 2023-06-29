@@ -1,13 +1,5 @@
-
 import re
 import datetime
-from dictionaries import hotel_dict
-
-
-
-def trailfinders_dictionaries():
-    # import standard hotel dictionary
-    base_hotel_dict = hotel_dict()
 
 def date_conversion_function(date):
     date_object = datetime.datetime.strptime(date, "%a %d %b %Y")
