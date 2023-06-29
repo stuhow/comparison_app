@@ -1,13 +1,22 @@
 import re
-from dictionaries import hotel_dict, flight_dict, cost_dict
-from trainfinders_hotel_functions import hotel_extraction
-from trailfinders_helper_functions import load_text, extract_date_tuples
-from trailfinders_costs import extract_costs
-from trailfinders_flights_functions import airline_extraction
 
-def trailfinders_dictionaries():
+import pdftotext
+# from dictionaries import hotel_dict, flight_dict, cost_dict
+# from trainfinders_hotel_functions import hotel_extraction
+# from trailfinders_helper_functions import load_text, extract_date_tuples
+# from trailfinders_costs import extract_costs
+# from trailfinders_flights_functions import airline_extraction
+
+from companies.dictionaries import hotel_dict, flight_dict, cost_dict
+from companies.trainfinders_hotel_functions import hotel_extraction
+from companies.trailfinders_helper_functions import load_text, extract_date_tuples
+from companies.trailfinders_costs import extract_costs
+from companies.trailfinders_flights_functions import airline_extraction
+
+def trailfinders_dictionaries(text):
+
     # load the text
-    text =load_text()
+    # text = load_text(pdf)
 
     # import standard costs dictionary
     cost_dictionary = cost_dict()
@@ -43,5 +52,13 @@ def trailfinders_dictionaries():
 
     return costs_dict, new_hotel_dict, new_flight_dict
 
-gf= trailfinders_dictionaries()
-print(gf[2])
+
+# pdf_file = open('trailfinders.pdf', 'rb')
+# full_pdf = pdftotext.PDF(pdf_file)
+
+# text =''
+# for page in full_pdf:
+#     text += page
+
+# gf = trailfinders_dictionaries(text)
+# print(gf[1])

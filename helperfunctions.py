@@ -1,18 +1,25 @@
 from companies.abercrombie import abercrombie_dictionaries
+from companies.trailfinders import trailfinders_dictionaries
 import requests
 import os
 from thefuzz import process
 from thefuzz import fuzz
-
+from PyPDF2 import PdfFileReader
+import pdftotext
 
 
 def select_company(text):
     if 'abercrombie' in text:
         return 'Abercrombie & Kent'
+    if 'trailfinders' in text:
+        return 'Trailfinders'
 
 def get_data(text, company):
     if company == "Abercrombie & Kent":
         return abercrombie_dictionaries(text)
+    if company == "Trailfinders":
+        return trailfinders_dictionaries(text)
+
 
 
 
@@ -154,7 +161,6 @@ def add_flight_cost(flight_dict):
 
     return flight_dict
 
-
 def add_hotel_details(hotel_dict):
     for i in range(len(hotel_dict['Check-in Date'])):
 
@@ -162,45 +168,52 @@ def add_hotel_details(hotel_dict):
 
         url = os.getenv("HOTEL_LOCATION_ENDPOINT")
 
-        querystring = {"name":full_hotel_name,
-                       "locale":"en-gb"}
+        querystring = {"name":full_hotel_name[:50:],
+                        "locale":"en-gb"}
 
         headers = {
-            "X-RapidAPI-Key": os.getenv("SKYSCANNER_API_KEY"),
-            "X-RapidAPI-Host": os.getenv("SKYSCANNER_API_HOST")
+            "X-RapidAPI-Key": os.getenv("BOOKING_API_KEY"),
+            "X-RapidAPI-Host": os.getenv("BOOKING_API_HOST")
         }
 
-        response = requests.get(url, headers=headers, params=querystring).json()
+        response = requests.get(url, headers=headers, params=querystring)
+
+        response= response.json()
 
         hotel_id = response[0]['dest_id']
+
 
         url = os.getenv("HOTEL_SEARCH_ENDPOINT")
 
         querystring = {"order_by":"popularity",
-                       "adults_number":"2",
-                       "checkin_date":hotel_dict['Check-in Date'][i],
-                       "filter_by_currency":"GBP",
-                       "dest_id":hotel_id,
-                       "locale":"en-gb",
-                       "checkout_date":hotel_dict['Check-out Date'][i],
-                       "units":"metric",
-                       "room_number":"1",
-                       "dest_type":"hotel"}
+                        "adults_number":"2",
+                        "checkin_date":hotel_dict['Check-in Date'][i],
+                        "filter_by_currency":"GBP",
+                        "dest_id":hotel_id,
+                        "locale":"en-gb",
+                        "checkout_date":hotel_dict['Check-out Date'][i],
+                        "units":"metric",
+                        "room_number":"1",
+                        "dest_type":"hotel"}
 
         headers = {
-            "X-RapidAPI-Key": os.getenv("SKYSCANNER_API_KEY"),
-            "X-RapidAPI-Host": os.getenv("SKYSCANNER_API_HOST")
+            "X-RapidAPI-Key": os.getenv("BOOKING_API_KEY"),
+            "X-RapidAPI-Host": os.getenv("BOOKING_API_HOST")
         }
 
         response = requests.get(url, headers=headers, params=querystring).json()
 
-        grossPrice = response['results'][0]['priceBreakdown']['grossPrice']['value']
-
-        if 'excludedPrice' in response['results'][0]['priceBreakdown'].keys():
-            excludedPrice = response['results'][0]['priceBreakdown']['excludedPrice']['value']
-            total_price = round(excludedPrice + grossPrice)
+        total_price = None
+        if response['results'][0]['priceBreakdown'] == None:
+            total_price = 'Sold out on booking.com'
         else:
-            total_price = round(grossPrice)
+            grossPrice = response['results'][0]['priceBreakdown']['grossPrice']['value']
+
+            if 'excludedPrice' in response['results'][0]['priceBreakdown'].keys():
+                excludedPrice = response['results'][0]['priceBreakdown']['excludedPrice']['value']
+                total_price = round(excludedPrice + grossPrice)
+            else:
+                total_price = round(grossPrice)
 
         review_score = response['results'][0]['reviewScore']
 

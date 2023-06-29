@@ -3,6 +3,7 @@ def hotel_dict():
     hotel_dict = {'Check-in Date': [],
             'nights': [],
             'Check-out Date': [],
+            'Location': [],
             'Hotel name': [],
             'Room category': [],
             'Number of rooms': [],
@@ -25,9 +26,9 @@ def flight_dict():
                'Flight number': [],
                'Airline': [],
                'Class': [],
-               'Arival Airport': [],
+               'Arrival Airport': [],
                'Arrival City': [],
                'Arrival Time': [],
-               'Arrival Date': [],
-               'Duration': []}
+               'Arrival Date': []
+               }
     return flight_dict

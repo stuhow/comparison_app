@@ -1,8 +1,10 @@
 import time
 from PyPDF2 import PdfFileReader
+import pdftotext
 from flask import Flask, render_template, request, redirect, session
 from helperfunctions import select_company, get_data, add_iata_code, add_flight_cost, add_hotel_details
 from prototyping import get_flight_dict, get_hotel_dict
+from companies.trailfinders import trailfinders_dictionaries
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -29,13 +31,12 @@ def loading():
 def extract():
     # Extract the first 10 lines from the PDF
     pdf_file = open('uploaded_file.pdf', 'rb')
-    # Read PDF
-    pdf_reader = PdfFileReader(pdf_file)
 
-    # Extract text
+    full_pdf = pdftotext.PDF(pdf_file)
+
     text =''
-    for page in pdf_reader.pages:
-        text += page.extract_text()
+    for page in full_pdf:
+        text += page
 
     # check name of company function
     company = select_company(text)
@@ -43,28 +44,22 @@ def extract():
     # once we have the name of the company extract the data with the
     # correct functions returning dictionaries for the costs, flights and hotels
     quote_data = get_data(text, company)
+    print(quote_data[1])
+    # # get hotel costs
+    hotel_dict = add_hotel_details(quote_data[1])
 
-    # get prototyping hotel example
-    hotel_dict = get_hotel_dict()
+    # # add iatacode to flight dict
+    # flight_dict = add_iata_code(flight_dict)
 
-    # get hotel costs
-    hotel_dict = add_hotel_details(hotel_dict)
-
-    # get prototyping filght example
-    flight_dict = get_flight_dict()
-
-    # add iatacode to flight dict
-    flight_dict = add_iata_code(flight_dict)
-
-    flight_dict = add_flight_cost(flight_dict)
+    # flight_dict = add_flight_cost(flight_dict)
 
     pdf_file.close()
 
     # Store the extracted data in session
-    session['flight_dict'] = flight_dict
+    session['flight_dict'] = quote_data[2]
     session['company'] = company
-    session['quote_data'] = quote_data
-    session['hotel_dict'] = hotel_dict
+    session['quote_data'] = quote_data[0]
+    session['hotel_dict'] = hotel_dict # quote_data[1]
 
 
     # Redirect to the results page
@@ -80,9 +75,9 @@ def results():
 
     # Render the results page with the extracted lines
     return render_template('results.html', company=company,
-                                            flight=flight_dict, #quote_data[2]
-                                            hotel=hotel_dict, #quote_data[1]
-                                            data=quote_data[0])
+                                            flight=flight_dict,
+                                            hotel=hotel_dict,
+                                            data=quote_data)
 
 if __name__ == '__main__':
     app.run(debug=True)

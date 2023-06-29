@@ -1,12 +1,13 @@
 import pdftotext
 import re
+import datetime
 
-def load_text():
-    with open('trailfinders.pdf', "rb") as f:
-        pdf = pdftotext.PDF(f)
+def load_text(pdf):
+    # with open('trailfinders.pdf', "rb") as f:
+    full_pdf = pdftotext.PDF(pdf)
 
     text =''
-    for page in pdf:
+    for page in full_pdf:
         text += page
 
     return text
@@ -26,3 +27,7 @@ def extract_date_tuples(text):
     tuple_dates_list.append((dates_list[-1],)) # finds text after the final date
 
     return tuple_dates_list
+
+def date_conversion_function(date):
+    date_object = datetime.datetime.strptime(date, "%a %d %b %Y")
+    return date_object.strftime("%Y-%m-%d")
