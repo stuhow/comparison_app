@@ -1,9 +1,4 @@
 import re
-from dictionaries import cost_dict
-from trailfinders_helper_functions import load_text
-
-cost_dictionary = cost_dict()
-text =load_text()
 
 def regex_function(regex, paragraph):
     match = regex.search(paragraph)
@@ -25,8 +20,7 @@ def number_of_people(text):
 def cost_per_person(text):
     return total_trip_cost(text)/number_of_people(text)
 
-def extract_costs(text):
-    cost_dictionary = cost_dict()
+def extract_costs(text, cost_dictionary):
     cost_dictionary['Total price'].append(total_trip_cost(text))
     cost_dictionary['Price per person'].append(cost_per_person(text))
     return cost_dictionary

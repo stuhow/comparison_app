@@ -1,5 +1,5 @@
 import re
-from dictionaries import hotel_dict, flight_dict
+from dictionaries import hotel_dict, flight_dict, cost_dict
 from trainfinders_hotel_functions import hotel_extraction
 from trailfinders_helper_functions import load_text, extract_date_tuples
 from trailfinders_costs import extract_costs
@@ -9,13 +9,14 @@ def trailfinders_dictionaries():
     # load the text
     text =load_text()
 
+    # import standard costs dictionary
+    cost_dictionary = cost_dict()
+
     # extracting costs
-    costs_dict = extract_costs(text)
+    costs_dict = extract_costs(text, cost_dictionary)
 
-    # import standard hotel dictionary
+    # import standard hotel & cost dictionary
     base_hotel_dict = hotel_dict()
-
-    # import standard flights dictionary
     base_flight_dict = flight_dict()
 
     # extract the list of date tuples from the text

@@ -1,9 +1,5 @@
 import re
-import datetime
-
-def date_conversion_function(date):
-    date_object = datetime.datetime.strptime(date, "%a %d %b %Y")
-    return date_object.strftime("%Y-%m-%d")
+from trailfinders_helper_functions import date_conversion_function
 
 def regex_function(regex, paragraph):
     match = regex.search(paragraph)

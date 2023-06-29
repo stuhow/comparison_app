@@ -6,6 +6,39 @@ def airline_name(paragraph):
     airlines = [airline.strip() for airline in airlines_list]
     return airlines
 
+def departure_date():
+    pass
+
+def departure_airport():
+    pass
+
+def departure_city():
+    pass
+
+def departure_time():
+    pass
+
+def flight_number():
+    pass
+
+def class_of_travel():
+    pass
+
+def arival_airport():
+    pass
+
+def arrival_city():
+    pass
+
+def arrival_time():
+    pass
+
+def arrival_date():
+    pass
+
+def duration():
+    pass
+
 def airline_extraction(flight_dict, pattern, text, i):
     matches = pattern.finditer(text)
     for match in matches:
