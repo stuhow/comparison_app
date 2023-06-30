@@ -58,6 +58,7 @@ def add_iata_code(flight_dict):
     '''
     a function to add the iata codes for airports to the flight dictionary if they don't have one
     '''
+
     if "Departure airport IATA code" not in flight_dict.keys(): #check if iata code extracted from quote
         for i in range(len(flight_dict['Departure Date'])): #if not add new key to dict with code
             if "Departure airport IATA code" not in flight_dict.keys():
@@ -67,17 +68,10 @@ def add_iata_code(flight_dict):
 
     if "Arrival airport IATA code" not in flight_dict.keys():
         for i in range(len(flight_dict['Departure Date'])):
-            if flight_dict['Arival Airport'][i] in flight_dict['Departure Airport']: # check if we already got the iata code in departure airports
-                airport_index = flight_dict['Departure Airport'].index(flight_dict['Arival Airport'][i])
-                if "Arrival airport IATA code" not in flight_dict.keys():
-                    flight_dict["Arrival airport IATA code"] = [flight_dict['Departure airport IATA code'][airport_index]]
-                else:
-                    flight_dict["Arrival airport IATA code"].append(flight_dict['Departure airport IATA code'][airport_index])
+            if "Arrival airport IATA code" not in flight_dict.keys():
+                flight_dict["Arrival airport IATA code"] = [get_iata_code(flight_dict['Arrival City'][i], flight_dict['Arrival Airport'][i])]
             else:
-                if "Arrival airport IATA code" not in flight_dict.keys(): # if arival airport not in departures get the airport code
-                    flight_dict["Arrival airport IATA code"] = [get_iata_code(flight_dict['Arrival City'][i], flight_dict['Departure Airport'][i])]
-                else:
-                    flight_dict["Arrival airport IATA code"].append(get_iata_code(flight_dict['Arrival City'][i], flight_dict['Departure Airport'][i]))
+                flight_dict["Arrival airport IATA code"].append(get_iata_code(flight_dict['Arrival City'][i], flight_dict['Arrival Airport'][i]))
 
     return flight_dict
 
@@ -113,14 +107,25 @@ def add_multistop_flight_cost(flight_dict):
     # is a function needed here to get the closest match to the airline names as they may not match?
 
     for i in range(len(flight_dict['Departure Date'])):
-        filtered_data = [item for item in filtered_data if item['legs'][i]['carriers'][0]['name'] == flight_dict['Airline'][i]]
+
+        # filtered_data = [item for item in filtered_data if item['legs'][i]['carriers'][0]['name'] == flight_dict['Airline'][i]]
         filtered_data = [item for item in filtered_data if item['legs'][i]['departure'][11:16] == flight_dict['Departure Time'][i]]
+
+        # get airline name
+        airport = flight_dict['Airline'][0].lower()
+
+        # get a list of airline names
+        airports_list = [i['legs'][0]['carriers'][0]['name'].lower() for i in filtered_data]
+
+        # check which airport name is the closest match
+        airport = process.extract(airport, airports_list, scorer=fuzz.ratio)[0][0]
+
+        filtered_data = [item for item in filtered_data if item['legs'][i]['carriers'][0]['name'].lower() == airport]
 
     flight_dict['Flight cost per person'] = [filtered_data[0]['price']['amount']]
 
     while len(flight_dict['Flight cost per person']) < len(flight_dict['Departure Date']):
         flight_dict['Flight cost per person'].append(" - ")
-
 
     return flight_dict
 
