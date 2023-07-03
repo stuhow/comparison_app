@@ -75,6 +75,7 @@ def add_iata_code(flight_dict):
 
     return flight_dict
 
+# airline selector function needed?
 def add_multistop_flight_cost(flight_dict):
     '''a function to get flight costs'''
 
