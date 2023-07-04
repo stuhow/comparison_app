@@ -1,7 +1,7 @@
 import re
-# from companies.trailfinders_helper_functions import date_conversion_function
+# from companies..helper.trailfinders_helper_functions import date_conversion_function
 
-from trailfinders_helper_functions import date_conversion_function
+from helper.trailfinders_helper_functions import date_conversion_function
 
 
 
