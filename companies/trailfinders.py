@@ -1,17 +1,18 @@
 import re
 
 import pdftotext
-# from dictionaries import hotel_dict, flight_dict, cost_dict
-# from trainfinders_hotel_functions import hotel_extraction
-# from trailfinders_helper_functions import load_text, extract_date_tuples
-# from trailfinders_costs import extract_costs
-# from trailfinders_flights_functions import airline_extraction
+from dictionaries import hotel_dict, flight_dict, cost_dict, car_hire_dict
+from trainfinders_hotel_functions import hotel_extraction
+from trailfinders_helper_functions import load_text, extract_date_tuples
+from trailfinders_costs import extract_costs
+from trailfinders_flights_functions import airline_extraction
+from trailfinders_car_hire_functions import car_hire_extraction
 
-from companies.dictionaries import hotel_dict, flight_dict, cost_dict
-from companies.trainfinders_hotel_functions import hotel_extraction
-from companies.trailfinders_helper_functions import load_text, extract_date_tuples
-from companies.trailfinders_costs import extract_costs
-from companies.trailfinders_flights_functions import airline_extraction
+# from companies.dictionaries import hotel_dict, flight_dict, cost_dict
+# from companies.trainfinders_hotel_functions import hotel_extraction
+# from companies.trailfinders_helper_functions import load_text, extract_date_tuples
+# from companies.trailfinders_costs import extract_costs
+# from companies.trailfinders_flights_functions import airline_extraction
 
 def trailfinders_dictionaries(text):
 
@@ -27,6 +28,7 @@ def trailfinders_dictionaries(text):
     # import standard hotel & cost dictionary
     base_hotel_dict = hotel_dict()
     base_flight_dict = flight_dict()
+    base_car_hire_dict = car_hire_dict()
 
     # extract the list of date tuples from the text
     tuple_dates_list = extract_date_tuples(text)
@@ -41,6 +43,7 @@ def trailfinders_dictionaries(text):
             # get hotel dictionary
             new_hotel_dict = hotel_extraction(base_hotel_dict, inbetween_dates_pattern, text, i)
             new_flight_dict = airline_extraction(base_flight_dict, inbetween_dates_pattern, text, i)
+            new_car_hire_dict = car_hire_extraction(base_car_hire_dict, inbetween_dates_pattern, text, i)
 
         # find details after final date
         else:
@@ -49,16 +52,17 @@ def trailfinders_dictionaries(text):
             # get hotel dictionary
             new_hotel_dict = hotel_extraction(base_hotel_dict, final_date_pattern, text, i)
             new_flight_dict = airline_extraction(base_flight_dict, final_date_pattern, text, i)
+            new_car_hire_dict = car_hire_extraction(base_car_hire_dict, final_date_pattern, text, i)
 
-    return costs_dict, new_hotel_dict, new_flight_dict
+    return costs_dict, new_hotel_dict, new_flight_dict, new_car_hire_dict
 
 
-# pdf_file = open('trailfinders.pdf', 'rb')
-# full_pdf = pdftotext.PDF(pdf_file)
+pdf_file = open('trailfinders.pdf', 'rb')
+full_pdf = pdftotext.PDF(pdf_file)
 
-# text =''
-# for page in full_pdf:
-#     text += page
+text =''
+for page in full_pdf:
+    text += page
 
-# gf = trailfinders_dictionaries(text)
-# print(gf[1])
+gf = trailfinders_dictionaries(text)
+print(gf[3])

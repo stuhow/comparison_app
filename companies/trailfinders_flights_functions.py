@@ -1,7 +1,7 @@
 import re
-from companies.trailfinders_helper_functions import date_conversion_function
+# from companies.trailfinders_helper_functions import date_conversion_function
 
-# from trailfinders_helper_functions import date_conversion_function
+from trailfinders_helper_functions import date_conversion_function
 
 def airline_name(paragraph):
     pattern = re.compile(r"No [A-Z]+\d+\s+With ([A-Z\s]+)\s{3}")
