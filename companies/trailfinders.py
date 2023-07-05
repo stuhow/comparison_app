@@ -55,7 +55,7 @@ def trailfinders_dictionaries(text):
             new_flight_dict = airline_extraction(base_flight_dict, final_date_pattern, text, i)
             new_car_hire_dict = car_hire_extraction(base_car_hire_dict, final_date_pattern, text, i)
 
-    return costs_dict, new_hotel_dict, new_flight_dict, new_car_hire_dict
+    return costs_dict, new_hotel_dict, new_flight_dict, new_car_hire_dict #, new_excursion_dict()
 
 
 pdf_file = open('trailfinders.pdf', 'rb')
@@ -66,4 +66,4 @@ for page in full_pdf:
     text += page
 
 gf = trailfinders_dictionaries(text)
-print(gf[3])
+print(gf[2])
