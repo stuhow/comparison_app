@@ -51,3 +51,12 @@ def car_hire_dict():
                }
 
     return car_hire_dict
+
+def excursion_dict():
+    excursion_dict ={'Excursion Name': [],
+                'Location': [],
+                'Operator': [],
+                'Description': []
+               }
+
+    return excursion_dict

@@ -13,9 +13,29 @@ def arrival_time_and_date(paragraph):
     return results
 
 
-def excursion_extraction(flight_dict, pattern, text, i):
+excursion_dict ={'Excursion Name': [],
+                'Location': [],
+                'Operator': [],
+                'Description': []
+               }
+
+
+def excursion_name():
+    pass
+
+def location():
+    pass
+
+def operator():
+    pass
+
+def tour_description():
+    pass
+
+
+def excursion_extraction(excursion_dict, pattern, text, i):
     matches = pattern.finditer(text)
     for match in matches:
         paragraph = match.group(2)
 
-    return flight_dict
+    return excursion_dict
