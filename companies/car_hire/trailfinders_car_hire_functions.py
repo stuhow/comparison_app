@@ -27,18 +27,19 @@ def regex_function(regex, paragraph):
     return variable
 
 def pick_up_city(paragraph):
-    regex = re.compile(r"Pick up: (.+)", re.MULTILINE)
+    regex = re.compile(r"Pick up:\s+(.+?)\s{3}", re.MULTILINE)
     return regex_function(regex, paragraph)
 
-def pick_up_class():
-    pass
+def pick_up_class(paragraph):
+    regex = re.compile(r"Pick up location:\s+(.+?)\s{3}", re.MULTILINE)
+    return regex_function(regex, paragraph)
 
 def drop_of_city(paragraph):
-    regex = re.compile(r"Supplier: (\w+)", re.MULTILINE)
+    regex = re.compile(r"Drop off:\s+(.+?)\s{3}", re.MULTILINE)
     return regex_function(regex, paragraph)
 
 def drop_of_class(paragraph):
-    regex = re.compile(r"Supplier: (\w+)", re.MULTILINE)
+    regex = re.compile(r"Drop off location:\s+(.+?)\s{3}", re.MULTILINE)
     return regex_function(regex, paragraph)
 
 def pick_up_date():
@@ -84,5 +85,8 @@ def car_hire_extraction(car_hire_dict, pattern, text, i):
             print(vendor(paragraph))
             print(pick_up_time(paragraph))
             print(pick_up_city(paragraph))
+            print(pick_up_class(paragraph))
+            print(drop_of_city(paragraph))
+            print(drop_of_class(paragraph))
 
     return car_hire_dict
