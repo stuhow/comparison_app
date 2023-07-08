@@ -55,7 +55,6 @@ def drop_of_date(paragraph):
     date_object = datetime.datetime.strptime(origional_date_format, "%d %b %Y")
     return date_object.strftime("%Y-%m-%d")
 
-
 def drop_of_time(paragraph):
     regex = re.compile(r"at (\d{2}:\d{2})")
     return regex_function(regex, paragraph)
@@ -68,17 +67,36 @@ def vendor(paragraph):
     regex = re.compile(r"Supplier: (\w+)", re.MULTILINE)
     return regex_function(regex, paragraph)
 
-def transmission():
-    pass
+
+def extract_text(input_text, start_pattern, check_word):
+    # Create the regular expression pattern
+    pattern = f"{re.escape(start_pattern)}(.*?)\s{3}"
+
+    text = ''
+    # Find all matches
+    matches = re.findall(pattern, input_text, re.DOTALL)
+    first_line = matches[0].split("\n")[0].split("   ")[0]
+    if matches[0].split("\n")[1].strip().split("   ")[0].startswith(check_word):
+        text = first_line
+    else:
+        text = first_line + " " + matches[0].split("\n")[1].strip().split("   ")[0]
+
+    return text
+
+def transmission(text):
+    if 'Automatic' in text:
+        return 'Automatic'
 
 def max_seats():
     pass
 
-def car_class():
-    pass
+def car_class(text):
+    if 'Intermediate' in text:
+        return 'Intermediate'
 
-def car_type():
-    pass
+def car_type(text):
+    if 'SUV' in text:
+        return 'SUV'
 
 
 def car_hire_extraction(car_hire_dict, pattern, text, i):
@@ -86,16 +104,21 @@ def car_hire_extraction(car_hire_dict, pattern, text, i):
     for match in matches:
         paragraph = match.group(2)
         if vendor(paragraph) != None:
-            print(paragraph)
-            print(pick_up_date(i))
-            print(vendor(paragraph))
-            print(pick_up_time(paragraph))
-            print(pick_up_city(paragraph))
-            print(pick_up_class(paragraph))
-            print(drop_of_city(paragraph))
-            print(drop_of_class(paragraph))
-            print(drop_of_date(paragraph))
-            print(drop_of_time(paragraph))
-            print(car_name(paragraph))
+
+            text = extract_text(paragraph, 'Car type: ', 'Pick up:')
+
+            car_hire_dict['Pick up City'].append(pick_up_city(paragraph))
+            car_hire_dict['Pick up Class'].append(pick_up_class(paragraph))
+            car_hire_dict['Drop of City'].append(drop_of_city(paragraph))
+            car_hire_dict['Drop of Class'].append(drop_of_class(paragraph))
+            car_hire_dict['pickUpDate'].append(pick_up_date(i))
+            car_hire_dict['pickUpTime'].append(pick_up_time(paragraph))
+            car_hire_dict['dropOffDate'].append(drop_of_date(paragraph))
+            car_hire_dict['dropOffTime'].append(drop_of_time(paragraph))
+            car_hire_dict['Car name'].append(car_name(paragraph))
+            car_hire_dict['Vendor'].append(vendor(paragraph))
+            car_hire_dict['Transmission'].append(transmission(text))
+            car_hire_dict['Car class'].append(car_class(text))
+            car_hire_dict['Car type'].append(car_type(text))
 
     return car_hire_dict
