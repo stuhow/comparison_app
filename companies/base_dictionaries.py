@@ -56,7 +56,8 @@ def excursion_dict():
     excursion_dict ={'Excursion Name': [],
                 'Location': [],
                 'Operator': [],
-                'Description': []
+                'Description': [],
+                'Start date': []
                }
 
     return excursion_dict

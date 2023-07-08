@@ -2,13 +2,6 @@ import re
 
 from helper.trailfinders_helper_functions import date_conversion_function
 
-excursion_dict ={'Excursion Name': [],
-                'Location': [],
-                'Operator': [],
-                'Description': []
-               }
-
-
 def excursion_name(paragraph):
     pattern = re.compile(r"^(.*?)Departing from", re.MULTILINE)
     excursion_name_list = re.findall(pattern, paragraph)
@@ -41,11 +34,11 @@ def excursion_extraction(excursion_dict, pattern, text, i):
         if len(excursion_name(paragraph)) > 0:
             if excursion_name(paragraph)[0] != "":
                 dates_list = [excursion_start_date(i) for _ in range(len(excursion_name(paragraph)))]
-                print(dates_list)
-                print(excursion_name(paragraph))
-                print(location(paragraph))
-                print(operator(paragraph))
-                print(tour_description(paragraph))
+                excursion_dict['Start date'].extend(dates_list)
+                excursion_dict['Excursion Name'].extend(excursion_name(paragraph))
+                excursion_dict['Location'].extend(location(paragraph))
+                excursion_dict['Operator'].extend(operator(paragraph))
+                excursion_dict['Description'].extend(tour_description(paragraph))
 
 
     return excursion_dict
