@@ -70,4 +70,3 @@ for page in full_pdf:
     text += page
 
 gf = trailfinders_dictionaries(text)
-print(gf)

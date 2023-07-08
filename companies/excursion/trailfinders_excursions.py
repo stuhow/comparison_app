@@ -21,9 +21,9 @@ excursion_dict ={'Excursion Name': [],
 
 
 def excursion_name(paragraph):
-    pattern = re.compile(r"From\s(.*?)\sTo")
+    pattern = re.compile(r"^(.*?)Departing from", re.MULTILINE)
     excursion_name_list = re.findall(pattern, paragraph)
-    return excursion_name_list
+    return [i.strip() for i in excursion_name_list]
 
 def excursion_start_date(i):
     return(i[0])
@@ -43,8 +43,13 @@ def excursion_extraction(excursion_dict, pattern, text, i):
     matches = pattern.finditer(text)
     for match in matches:
         paragraph = match.group(2)
+        # print(paragraph)
+        # print(excursion_name(paragraph))
+        # print(excursion_start_date(i))
         if len(excursion_name(paragraph)) > 0:
-            print(excursion_name(paragraph))
-            print(excursion_start_date(i))
+            if excursion_name(paragraph)[0] != "":
+                print(excursion_name(paragraph))
+                print(excursion_start_date(i))
+
 
     return excursion_dict
