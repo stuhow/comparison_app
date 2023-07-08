@@ -34,8 +34,10 @@ def location(paragraph):
     excursion_name_list = re.findall(pattern, paragraph)
     return [i.strip() for i in excursion_name_list]
 
-def operator():
-    pass
+def operator(paragraph):
+    pattern = re.compile(r"^.*With (\w+(?: \w+)*)$", re.MULTILINE)
+    excursion_name_list = re.findall(pattern, paragraph)
+    return [i.strip() for i in excursion_name_list]
 
 def tour_description():
     pass
@@ -45,14 +47,12 @@ def excursion_extraction(excursion_dict, pattern, text, i):
     matches = pattern.finditer(text)
     for match in matches:
         paragraph = match.group(2)
-        # print(paragraph)
-        # print(excursion_name(paragraph))
-        # print(excursion_start_date(i))
         if len(excursion_name(paragraph)) > 0:
             if excursion_name(paragraph)[0] != "":
                 print(excursion_start_date(i))
                 print(excursion_name(paragraph))
                 print(location(paragraph))
+                print(operator(paragraph))
 
 
     return excursion_dict
