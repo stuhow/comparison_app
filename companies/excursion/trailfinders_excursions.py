@@ -1,17 +1,6 @@
 import re
 
-def arrival_time_and_date(paragraph):
-    pattern = r"Arriving at (\d{2}:\d{2})(?: \(([^)]+)\))?"
-    matches = re.findall(pattern, paragraph)
-
-    results = []
-    for match in matches:
-        arrival_time = match[0]
-        arrival_date = match[1] if match[1] else None
-        results.append((arrival_time, arrival_date))
-
-    return results
-
+from helper.trailfinders_helper_functions import date_conversion_function
 
 excursion_dict ={'Excursion Name': [],
                 'Location': [],
@@ -26,21 +15,23 @@ def excursion_name(paragraph):
     return [i.strip() for i in excursion_name_list]
 
 def excursion_start_date(i):
-    return(i[0])
+    return(date_conversion_function(i[0]))
 
 
 def location(paragraph):
     pattern = re.compile(r"^.*Departing from ([^\n]+)", re.MULTILINE)
-    excursion_name_list = re.findall(pattern, paragraph)
-    return [i.strip() for i in excursion_name_list]
+    location_name_list = re.findall(pattern, paragraph)
+    return [i.strip() for i in location_name_list]
 
 def operator(paragraph):
     pattern = re.compile(r"^.*With (\w+(?: \w+)*)$", re.MULTILINE)
-    excursion_name_list = re.findall(pattern, paragraph)
-    return [i.strip() for i in excursion_name_list]
+    operator_name_list = re.findall(pattern, paragraph)
+    return [i.strip() for i in operator_name_list]
 
-def tour_description():
-    pass
+def tour_description(paragraph):
+    pattern = re.compile(r"Tour copy supplied by [^:]+:\n([\s\S]+?)(?:Your tour voucher will be available|\n\n)", re.MULTILINE)
+    tour_description_list = re.findall(pattern, paragraph)
+    return [i.strip() for i in tour_description_list]
 
 
 def excursion_extraction(excursion_dict, pattern, text, i):
@@ -49,10 +40,12 @@ def excursion_extraction(excursion_dict, pattern, text, i):
         paragraph = match.group(2)
         if len(excursion_name(paragraph)) > 0:
             if excursion_name(paragraph)[0] != "":
-                print(excursion_start_date(i))
+                dates_list = [excursion_start_date(i) for _ in range(len(excursion_name(paragraph)))]
+                print(dates_list)
                 print(excursion_name(paragraph))
                 print(location(paragraph))
                 print(operator(paragraph))
+                print(tour_description(paragraph))
 
 
     return excursion_dict
