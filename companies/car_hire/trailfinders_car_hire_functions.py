@@ -66,6 +66,6 @@ def car_hire_extraction(car_hire_dict, pattern, text, i):
     matches = pattern.finditer(text)
     for match in matches:
         paragraph = match.group(2)
-        print(paragraph)
+        #print(paragraph)
 
     return car_hire_dict
