@@ -60,8 +60,9 @@ def drop_of_time(paragraph):
     regex = re.compile(r"at (\d{2}:\d{2})")
     return regex_function(regex, paragraph)
 
-def car_name():
-    pass
+def car_name(paragraph):
+    regex = re.compile(r"\s{2}([^:]+) or similar", re.MULTILINE)
+    return regex_function(regex, paragraph)
 
 def vendor(paragraph):
     regex = re.compile(r"Supplier: (\w+)", re.MULTILINE)
@@ -85,6 +86,7 @@ def car_hire_extraction(car_hire_dict, pattern, text, i):
     for match in matches:
         paragraph = match.group(2)
         if vendor(paragraph) != None:
+            print(paragraph)
             print(pick_up_date(i))
             print(vendor(paragraph))
             print(pick_up_time(paragraph))
@@ -94,5 +96,6 @@ def car_hire_extraction(car_hire_dict, pattern, text, i):
             print(drop_of_class(paragraph))
             print(drop_of_date(paragraph))
             print(drop_of_time(paragraph))
+            print(car_name(paragraph))
 
     return car_hire_dict
