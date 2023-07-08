@@ -29,8 +29,10 @@ def excursion_start_date(i):
     return(i[0])
 
 
-def location():
-    pass
+def location(paragraph):
+    pattern = re.compile(r"^.*Departing from ([^\n]+)", re.MULTILINE)
+    excursion_name_list = re.findall(pattern, paragraph)
+    return [i.strip() for i in excursion_name_list]
 
 def operator():
     pass
@@ -48,8 +50,9 @@ def excursion_extraction(excursion_dict, pattern, text, i):
         # print(excursion_start_date(i))
         if len(excursion_name(paragraph)) > 0:
             if excursion_name(paragraph)[0] != "":
-                print(excursion_name(paragraph))
                 print(excursion_start_date(i))
+                print(excursion_name(paragraph))
+                print(location(paragraph))
 
 
     return excursion_dict
