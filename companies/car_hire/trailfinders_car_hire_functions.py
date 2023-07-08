@@ -19,6 +19,13 @@ car_hire_dict = {'Pick up City': [],
                 'Car type': []# suv
 }
 
+def regex_function(regex, paragraph):
+    match = regex.search(paragraph)
+    variable = None
+    if match:
+        variable = match.group(1).strip()
+    return variable
+
 def pick_up_city():
     pass
 
@@ -46,8 +53,9 @@ def drop_of_time():
 def car_name():
     pass
 
-def vendor():
-    pass
+def vendor(paragraph):
+    regex = re.compile(r"Supplier: (\w+)", re.MULTILINE)
+    return regex_function(regex, paragraph)
 
 def transmission():
     pass
@@ -66,6 +74,7 @@ def car_hire_extraction(car_hire_dict, pattern, text, i):
     matches = pattern.finditer(text)
     for match in matches:
         paragraph = match.group(2)
-        #print(paragraph)
+        if vendor(paragraph) != None:
+            print(vendor(paragraph))
 
     return car_hire_dict

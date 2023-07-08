@@ -70,8 +70,4 @@ for page in full_pdf:
     text += page
 
 gf = trailfinders_dictionaries(text)
-# print(gf[4])
-
-for i in gf[4].keys():
-    print(i)
-    print(len(gf[4][i]))
+print(gf[3])
