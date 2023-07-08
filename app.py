@@ -45,21 +45,26 @@ def extract():
     # correct functions returning dictionaries for the costs, flights and hotels
     quote_data = get_data(text, company)
 
+    # car_hire_dict = quote_data[3]['Max seats'].append('5')
+    # car_hire_dict['Max seats'].append('5')
+
     # # get hotel costs
-    hotel_dict = add_hotel_details(quote_data[1])
+    # hotel_dict = add_hotel_details(quote_data[1])
 
     # # add iatacode to flight dict
-    flight_dict = add_iata_code(quote_data[2])
+    # flight_dict = add_iata_code(quote_data[2])
 
-    flight_dict = add_multistop_flight_cost(flight_dict)
+    # flight_dict = add_multistop_flight_cost(flight_dict)
 
     pdf_file.close()
 
     # Store the extracted data in session
-    session['flight_dict'] = flight_dict
+    session['flight_dict'] = quote_data[2]
     session['company'] = company
-    session['quote_data'] = quote_data[0]
-    session['hotel_dict'] = hotel_dict # quote_data[1]
+    session['cost_data'] = quote_data[0]['Total price'][0]
+    session['hotel_dict'] = quote_data[1] # quote_data[1]
+    session['car_hire_dict'] = quote_data[3]
+    session['excursion_dict'] = quote_data[4]
 
 
     # Redirect to the results page
@@ -69,15 +74,19 @@ def extract():
 def results():
     # Retrieve the extracted lines from session
     flight_dict = session.get('flight_dict', [])
-    quote_data = session.get('quote_data', [])
+    cost_data = session.get('cost_data', [])
     company = session.get('company', [])
     hotel_dict = session.get('hotel_dict', [])
+    car_hire_dict = session.get('car_hire_dict', [])
+    excursion_dict = session.get('excursion_dict', [])
 
     # Render the results page with the extracted lines
     return render_template('results.html', company=company,
                                             flight=flight_dict,
                                             hotel=hotel_dict,
-                                            data=quote_data)
+                                            costs=cost_data,
+                                            carhire=car_hire_dict,
+                                            excursion=excursion_dict)
 
 if __name__ == '__main__':
     app.run(debug=True)

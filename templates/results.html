@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Table Example</title>
+  <title>Quote summary</title>
   <style>
       /* Table Styles */
       table {
@@ -23,13 +23,24 @@
       h1 {
           text-align: center;
       }
+
+      /* New Styles */
+      .summary-heading {
+          font-size: 18px;
+          font-weight: bold;
+          font-family: Arial, sans-serif;
+      }
+
+      .summary-value {
+          font-size: 18px;
+          font-family: Arial, sans-serif;
+      }
   </style>
-<head>
-    <title>Summary</title>
 </head>
 <body>
     <h1>Summary</h1>
-    <p>Travel Company: {{ company }}</p>
+    <p class="summary-heading">Travel Company: <span class="summary-value">{{ company }}</span></p>
+    <p class="summary-heading">Trip cost: <span class="summary-value">{{ costs }}</span></p>
     <h3>Hotel Summary</h3>
     <table>
         <thead>
@@ -68,24 +79,37 @@
           {% endfor %}
       </tbody>
     </table>
-    <h3>Cost Summary</h3>
+    <h3>Excurson Summary</h3>
     <table>
         <thead>
             <tr>
-                {% for column in data.keys() %}
+                {% for column in excursion.keys() %}
                 <th>{{ column }}</th>
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for row in range(data['Breakdown']|length) %}
+            {% for row in range(excursion['Description']|length) %}
             <tr>
-                {% for column in data.keys() %}
-                <td>{{ data[column][row] }}</td>
+                {% for column in excursion.keys() %}
+                <td>{{ excursion[column][row] }}</td>
                 {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <h3>Car hire Summary</h3>
+    <table>
+      <tr>
+          <th>Attribute</th>
+          <th>Value</th>
+      </tr>
+      {% for key, values in carhire.items() %}
+      <tr>
+          <td>{{ key }}</td>
+          <td>{{ values[0] }}</td>
+      </tr>
+      {% endfor %}
+  </table>
 </body>
 </html>

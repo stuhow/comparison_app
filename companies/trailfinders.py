@@ -1,20 +1,21 @@
 import re
 
 import pdftotext
-from base_dictionaries import hotel_dict, flight_dict, cost_dict, car_hire_dict, excursion_dict
-from hotel.trainfinders_hotel_functions import hotel_extraction
-from helper.trailfinders_helper_functions import extract_date_tuples
-from cost.trailfinders_costs import extract_costs
-from flight.trailfinders_flights_functions import airline_extraction
-from car_hire.trailfinders_car_hire_functions import car_hire_extraction
-from excursion.trailfinders_excursions import excursion_extraction
+# from base_dictionaries import hotel_dict, flight_dict, cost_dict, car_hire_dict, excursion_dict
+# from hotel.trainfinders_hotel_functions import hotel_extraction
+# from helper.trailfinders_helper_functions import extract_date_tuples
+# from cost.trailfinders_costs import extract_costs
+# from flight.trailfinders_flights_functions import airline_extraction
+# from car_hire.trailfinders_car_hire_functions import car_hire_extraction
+# from excursion.trailfinders_excursions import excursion_extraction
 
-# from companies.dictionaries import hotel_dict, flight_dict, cost_dict
-# from companies.hotel.trainfinders_hotel_functions import hotel_extraction
-# from companies.helper.trailfinders_helper_functions import load_text, extract_date_tuples
-# from companies.cost.trailfinders_costs import extract_costs
-# from companies.flight.trailfinders_flights_functions import airline_extraction
-# from companies.car_hire.trailfinders_car_hire_functions import car_hire_extraction
+from companies.base_dictionaries import hotel_dict, flight_dict, cost_dict, car_hire_dict, excursion_dict
+from companies.hotel.trainfinders_hotel_functions import hotel_extraction
+from companies.helper.trailfinders_helper_functions import extract_date_tuples
+from companies.cost.trailfinders_costs import extract_costs
+from companies.flight.trailfinders_flights_functions import airline_extraction
+from companies.car_hire.trailfinders_car_hire_functions import car_hire_extraction
+from companies.excursion.trailfinders_excursions import excursion_extraction
 
 def trailfinders_dictionaries(text):
 
