@@ -31,7 +31,7 @@ def operator(paragraph):
 def tour_description(paragraph):
     pattern = re.compile(r"Tour copy supplied by [^:]+:\n([\s\S]+?)(?:Your tour voucher will be available|\n\n)", re.MULTILINE)
     tour_description_list = re.findall(pattern, paragraph)
-    return [i.strip() for i in tour_description_list]
+    return [i.strip().replace("\n       "," ") for i in tour_description_list]
 
 
 def excursion_extraction(excursion_dict, pattern, text, i):
