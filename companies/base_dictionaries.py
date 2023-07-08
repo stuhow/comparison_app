@@ -14,7 +14,7 @@ def hotel_dict():
 def cost_dict():
     cost_dict = {'Total price': [],
             'Price per person': [],
-
+            'Number of people': []
             }
     return cost_dict
 

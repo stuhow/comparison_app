@@ -23,4 +23,5 @@ def cost_per_person(text):
 def extract_costs(text, cost_dictionary):
     cost_dictionary['Total price'].append(total_trip_cost(text))
     cost_dictionary['Price per person'].append(cost_per_person(text))
+    cost_dictionary['Number of people'].append(number_of_people(text))
     return cost_dictionary
