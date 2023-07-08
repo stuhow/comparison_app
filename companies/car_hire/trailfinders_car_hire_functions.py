@@ -27,7 +27,7 @@ def regex_function(regex, paragraph):
     return variable
 
 def pick_up_city(paragraph):
-    regex = re.compile(r"Supplier: (\w+)", re.MULTILINE)
+    regex = re.compile(r"Pick up: (.+)", re.MULTILINE)
     return regex_function(regex, paragraph)
 
 def pick_up_class():
@@ -83,5 +83,6 @@ def car_hire_extraction(car_hire_dict, pattern, text, i):
         if vendor(paragraph) != None:
             print(vendor(paragraph))
             print(pick_up_time(paragraph))
+            print(pick_up_city(paragraph))
 
     return car_hire_dict
