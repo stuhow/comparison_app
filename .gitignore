@@ -4,3 +4,4 @@ __pycache__/
 .envrc
 .ipynb_checkpoints/
 notebooks/
+prototyping/
