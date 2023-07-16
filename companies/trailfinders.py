@@ -63,12 +63,12 @@ def trailfinders_dictionaries(text):
     return costs_dict, new_hotel_dict, new_flight_dict, new_car_hire_dict, new_excursion_dict
 
 
-pdf_file = open('trailfinders.pdf', 'rb')
-full_pdf = pdftotext.PDF(pdf_file)
+# pdf_file = open('trailfinders.pdf', 'rb')
+# full_pdf = pdftotext.PDF(pdf_file)
 
-text =''
-for page in full_pdf:
-    text += page
+# text =''
+# for page in full_pdf:
+#     text += page
 
-gf = trailfinders_dictionaries(text)
-print(gf[3])
+# gf = trailfinders_dictionaries(text)
+# print(gf[3])

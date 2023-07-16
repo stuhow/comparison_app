@@ -2,8 +2,8 @@ import time
 from PyPDF2 import PdfFileReader
 import pdftotext
 from flask import Flask, render_template, request, redirect, session
-from api.helperfunctions import select_company, get_data, add_iata_code, add_flight_cost, add_hotel_details, add_multistop_flight_cost
-from prototyping import get_flight_dict, get_hotel_dict
+from api.helperfunctions import select_company, get_data #, add_iata_code, add_flight_cost, add_hotel_details, add_multistop_flight_cost
+# from prototyping import get_flight_dict, get_hotel_dict
 from companies.trailfinders import trailfinders_dictionaries
 
 app = Flask(__name__)
@@ -44,6 +44,11 @@ def extract():
     # once we have the name of the company extract the data with the
     # correct functions returning dictionaries for the costs, flights and hotels
     quote_data = get_data(text, company)
+
+
+    # statement to add max number of seats to carhire dict based on number of pax
+    if quote_data[0]['Number of people'][0] >= 2:
+        quote_data[3]['Max seats'].append(5)
 
     # car_hire_dict = quote_data[3]['Max seats'].append('5')
     # car_hire_dict['Max seats'].append('5')
