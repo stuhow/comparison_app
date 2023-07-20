@@ -2,9 +2,11 @@ import time
 from PyPDF2 import PdfFileReader
 import pdftotext
 from flask import Flask, render_template, request, redirect, session
-from api.helperfunctions import select_company, get_data, add_iata_code #, add_flight_cost, add_hotel_details, add_multistop_flight_cost
+from api.helperfunctions import select_company, get_data #, add_iata_code , add_flight_cost, add_hotel_details, add_multistop_flight_cost
+from api.flight_api import add_iata_codes, add_entity_codes, add_multistop_flight_cost
 # from prototyping import get_flight_dict, get_hotel_dict
 from companies.trailfinders import trailfinders_dictionaries
+from api.hotels_api import add_hotel_details
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -50,21 +52,22 @@ def extract():
     if quote_data[0]['Number of people'][0] >= 2:
         quote_data[3]['Max seats'].append(5)
 
-    # # get hotel costs
-    # hotel_dict = add_hotel_details(quote_data[1])
+    # get hotel costs
+    hotel_dict = add_hotel_details(quote_data[1])
 
-    # # add iatacode to flight dict
-    flight_dict = add_iata_code(quote_data[2])
+    # add iatacode to flight dict
+    flight_dict = add_iata_codes(quote_data[2])
+    flight_dict = add_entity_codes(flight_dict)
 
-    # flight_dict = add_multistop_flight_cost(flight_dict)
+    flight_dict = add_multistop_flight_cost(flight_dict)
 
     pdf_file.close()
 
     # Store the extracted data in session
-    session['flight_dict'] = quote_data[2]
+    session['flight_dict'] = flight_dict # quote_data[2]
     session['company'] = company
     session['cost_data'] = quote_data[0]['Total price'][0]
-    session['hotel_dict'] = quote_data[1] # quote_data[1]
+    session['hotel_dict'] = hotel_dict # quote_data[1]
     session['car_hire_dict'] = quote_data[3]
     session['excursion_dict'] = quote_data[4]
 

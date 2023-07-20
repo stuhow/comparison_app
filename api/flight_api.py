@@ -159,6 +159,10 @@ def add_multistop_flight_cost(flight_dict):
         # filtered_data = [item for item in filtered_data if item['legs'][i]['carriers'][0]['name'] == flight_dict['Airline'][i]]
         filtered_data = [item for item in filtered_data if item['legs'][i]['departure'][11:16] == flight_dict['Departure Time'][i]]
 
+        # if flights not found it returns the origional dictionary
+        if len(filtered_data) == 0:
+            return flight_dict
+
         # get airline name
         airline = flight_dict['Airline'][0].lower()
 
@@ -176,6 +180,3 @@ def add_multistop_flight_cost(flight_dict):
         flight_dict['Flight cost per person'].append(" - ")
 
     return flight_dict
-
-
-print(add_multistop_flight_cost(flight_dict))
