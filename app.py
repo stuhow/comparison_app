@@ -50,9 +50,6 @@ def extract():
     if quote_data[0]['Number of people'][0] >= 2:
         quote_data[3]['Max seats'].append(5)
 
-    # car_hire_dict = quote_data[3]['Max seats'].append('5')
-    # car_hire_dict['Max seats'].append('5')
-
     # # get hotel costs
     # hotel_dict = add_hotel_details(quote_data[1])
 
