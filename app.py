@@ -2,7 +2,7 @@ import time
 from PyPDF2 import PdfFileReader
 import pdftotext
 from flask import Flask, render_template, request, redirect, session
-from api.helperfunctions import select_company, get_data #, add_iata_code, add_flight_cost, add_hotel_details, add_multistop_flight_cost
+from api.helperfunctions import select_company, get_data, add_iata_code #, add_flight_cost, add_hotel_details, add_multistop_flight_cost
 # from prototyping import get_flight_dict, get_hotel_dict
 from companies.trailfinders import trailfinders_dictionaries
 
@@ -57,7 +57,7 @@ def extract():
     # hotel_dict = add_hotel_details(quote_data[1])
 
     # # add iatacode to flight dict
-    # flight_dict = add_iata_code(quote_data[2])
+    flight_dict = add_iata_code(quote_data[2])
 
     # flight_dict = add_multistop_flight_cost(flight_dict)
 

@@ -50,7 +50,7 @@ def add_iata_code(flight_dict):
                 flight_dict["Arrival airport IATA code"] = [get_iata_code(flight_dict['Arrival City'][i], flight_dict['Arrival Airport'][i])]
             else:
                 flight_dict["Arrival airport IATA code"].append(get_iata_code(flight_dict['Arrival City'][i], flight_dict['Arrival Airport'][i]))
-
+    print(flight_dict)
     return flight_dict
 
 # airline selector function needed?
