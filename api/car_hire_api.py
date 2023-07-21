@@ -30,39 +30,41 @@ def car_hire_entity_id(rental_city, rental_class):
     entity_id = pick_up_location[0]['entity_id']
     return entity_id
 
-pick_up_entity = car_hire_entity_id(car_hire_dict["Pick up City"], car_hire_dict["Pick up Class"])
-drop_of_entity = car_hire_entity_id(car_hire_dict["Drop of City"], car_hire_dict["Drop of Class"])
+def car_hire_cost(car_hire_dict):
 
-# search cars
-url = os.getenv("SEARCH_CARS_ENDPOINT")
+    pick_up_entity = car_hire_entity_id(car_hire_dict["Pick up City"], car_hire_dict["Pick up Class"])
+    drop_of_entity = car_hire_entity_id(car_hire_dict["Drop of City"], car_hire_dict["Drop of Class"])
 
-querystring = {"pickUpEntityId": pick_up_entity,
-               "pickUpDate": car_hire_dict["pickUpDate"],
-               "pickUpTime": car_hire_dict["pickUpTime"],
-               "dropOffEntityId": drop_of_entity,
-               "dropOffDate": car_hire_dict["dropOffDate"],
-               "dropOffTime": car_hire_dict["dropOffTime"]}
+    # search cars
+    url = os.getenv("SEARCH_CARS_ENDPOINT")
 
-headers = {
-    "X-RapidAPI-Key": os.getenv("SKYSCANNER_API_KEY"),
-    "X-RapidAPI-Host": os.getenv("SKYSCANNER_API_HOST")
-}
+    querystring = {"pickUpEntityId": pick_up_entity,
+                "pickUpDate": car_hire_dict["pickUpDate"],
+                "pickUpTime": car_hire_dict["pickUpTime"],
+                "dropOffEntityId": drop_of_entity,
+                "dropOffDate": car_hire_dict["dropOffDate"],
+                "dropOffTime": car_hire_dict["dropOffTime"]}
 
-response = requests.get(url, headers=headers, params=querystring).json()
+    headers = {
+        "X-RapidAPI-Key": os.getenv("SKYSCANNER_API_KEY"),
+        "X-RapidAPI-Host": os.getenv("SKYSCANNER_API_HOST")
+    }
 
-for i in response['data']['groups'].keys():
-    if (response['data']['groups'][i]['doors'] == 'suv')\
-        and (response['data']['groups'][i]['trans'] == 'automatic')\
-        and (response['data']['groups'][i]['cls'] == 'intermediate')\
-        and (response['data']['groups'][i]['max_seats'] == 5):
-        print(response['data']['groups'][i])
-        car_group = i
+    response = requests.get(url, headers=headers, params=querystring).json()
 
-# select cars by company
-company = [i for i in response['data']['quotes'] if i['vndr'] == car_hire_dict["Vendor"]]
+    for i in response['data']['groups'].keys():
+        if (response['data']['groups'][i]['doors'] == 'suv')\
+            and (response['data']['groups'][i]['trans'] == 'automatic')\
+            and (response['data']['groups'][i]['cls'] == 'intermediate')\
+            and (response['data']['groups'][i]['max_seats'] == 5):
+            print(response['data']['groups'][i])
+            car_group = i
 
-# select cars by car group
-group = [i for i in company if i['group'] == car_group]
+    # select cars by company
+    company = [i for i in response['data']['quotes'] if i['vndr'] == car_hire_dict["Vendor"]]
 
-# price
-group[0]['price']
+    # select cars by car group
+    group = [i for i in company if i['group'] == car_group]
+
+    # price
+    return group[0]['price']
